@@ -27,7 +27,10 @@ const fmt = d => d ? new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'nu
 const short = d => d ? new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '—';
 const daysBetween = (a,b) => Math.ceil((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000);
 const todayISO = new Date().toLocaleDateString('en-CA'); // Actual local reporting date.
-const initial = [];
+// Use the bundled roadmap whenever shared data is unavailable or has not yet
+// been seeded. An empty fallback prevents users from selecting a phase when
+// creating a task.
+const initial = bundledData.rows || [];
 const { rows: ignoredRows, ...initialRoadmap } = bundledData;
 function normalizeRoadmap(remote={}){
  const legend=Array.isArray(remote.legend)?remote.legend.map(item=>typeof item==='string'?{label:item}:item):initialRoadmap.legend;

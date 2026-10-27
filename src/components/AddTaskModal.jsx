@@ -9,6 +9,7 @@ export function AddTaskModal({phases,onClose,onAdd}){
  const [error,setError]=useState('');
  const submit=event=>{
   event.preventDefault();
+  if(!phases.length)return setError('Create a phase before adding a task.');
   if(!draft.step.trim()||!draft.phase||!draft.owner.trim())return setError('Task, phase, and owner are required.');
   if(draft.plannedStart&&draft.plannedEnd&&draft.plannedEnd<draft.plannedStart)return setError('End date cannot be before the start date.');
   onAdd(draft);
@@ -18,7 +19,7 @@ export function AddTaskModal({phases,onClose,onAdd}){
    <div className="add-task-heading"><div><span>Task planner</span><h2 id="add-task-title">Add a new task</h2><p>Set the owner, timeline, and delivery status.</p></div><button type="button" onClick={onClose} aria-label="Close"><X size={16}/></button></div>
    <form onSubmit={submit} className="add-task-form">
     <label>Task name *<input autoFocus value={draft.step} onChange={event=>setDraft({...draft,step:event.target.value})}/></label>
-    <label>Phase *<select value={draft.phase} onChange={event=>setDraft({...draft,phase:event.target.value})}>{phases.map(phase=><option key={phase.id} value={phase.phase}>{phase.phase}</option>)}</select></label>
+    <label>Phase *<select value={draft.phase} disabled={!phases.length} onChange={event=>setDraft({...draft,phase:event.target.value})}>{phases.length?<>{phases.map(phase=><option key={phase.id} value={phase.phase}>{phase.phase}</option>)}</>:<option value="">No phases available</option>}</select></label>
     <label>Owner *<input value={draft.owner} onChange={event=>setDraft({...draft,owner:event.target.value})}/></label>
     <label>Reviewer<input value={draft.reviewer} onChange={event=>setDraft({...draft,reviewer:event.target.value})}/></label>
     <label>Status<select value={draft.status} onChange={event=>setDraft({...draft,status:event.target.value})}>{statuses.map(status=><option key={status}>{status}</option>)}</select></label>
@@ -26,7 +27,7 @@ export function AddTaskModal({phases,onClose,onAdd}){
     <label>Due date<input type="date" min={draft.plannedStart||undefined} value={draft.plannedEnd} onChange={event=>setDraft({...draft,plannedEnd:event.target.value})}/></label>
     <label className="add-task-notes">Notes<textarea rows="3" value={draft.notes} onChange={event=>setDraft({...draft,notes:event.target.value})}/></label>
     {error&&<p className="add-task-error">{error}</p>}
-    <div className="add-task-actions"><button type="button" className="outline" onClick={onClose}>Cancel</button><button className="primary" type="submit">Add and save</button></div>
+    <div className="add-task-actions"><button type="button" className="outline" onClick={onClose}>Cancel</button><button className="primary" type="submit" disabled={!phases.length}>Add and save</button></div>
    </form>
   </section>
  </div>;
